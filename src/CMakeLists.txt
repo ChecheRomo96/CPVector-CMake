@@ -35,6 +35,25 @@
 	if(${CPVECTOR_COMPILE_SORTING})
 		target_compile_definitions(CPVector INTERFACE CPVECTOR_SORTING_ENABLED)
 	endif()
+
+	if(${CPVECTOR_USE_STD_VECTOR_ALLOCATION})
+		target_compile_definitions(CPVector INTERFACE CPVECTOR_USING_STD_ALLOCATION)
+	endif()
+
+
+	if(${CPVECTOR_USE_CPP_ALLOCATION})
+		target_compile_definitions(CPVector INTERFACE CPVECTOR_USING_CPP_ALLOCATION)
+	endif()
+
+
+	if(${CPVECTOR_USE_C_ALLOCATION})
+		target_compile_definitions(CPVector INTERFACE CPVECTOR_USING_C_ALLOCATION)
+	endif()
+
+
+	set(CPVECTOR_USE_STD_VECTOR_ALLOCATION FALSE CACHE BOOL "CPVector::vector using std::vector")
+	set(CPVECTOR_USE_C_ALLOCATION FALSE CACHE BOOL "CPVector::vector using C allocators (malloc, calloc, free) ")
+	set(CPVECTOR_USE_CPP_ALLOCATION FALSE CACHE BOOL "CPVector::vector using C++ allocators (new, new[], delete, delete[]).")
 #
 ######################################################################################################
 # Include directories for install and for build 
