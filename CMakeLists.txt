@@ -56,12 +56,11 @@
 	if( ${CPVECTOR_TESTING} )
 		message("Building ${CMAKE_PROJECT_NAME} Tests...")
 
-		set(DOWNLOAD_EXTRACT_TIMESTAMP TRUE )
 		include(FetchContent)
 
 		FetchContent_Declare(
 		  googletest
-		  URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+		  URL https://github.com/google/googletest/archive/f8d7d77c06936315286eb55f8de22cd23c188571.zip
 		)
 		# For Windows: Prevent overriding the parent project's compiler/linker settings
 		set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
