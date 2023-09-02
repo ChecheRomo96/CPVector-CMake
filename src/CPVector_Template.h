@@ -72,7 +72,7 @@
 		            unsigned int _Capacity;
 		            T * _Buffer;
 	            #elif defined(CPVECTOR_USING_STD_ALLOCATION)
-	            	std::vector<T> _Vector;
+	            	std::vector < T > _Vector;
 				#endif
 			//
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -284,7 +284,7 @@
 							#if defined(CPVECTOR_USING_STD_ALLOCATION)
 
 
-								//if(position >= size()){ throw CPVector::out }
+								if(position >= size()){ throw CPVector::out }
 
 								return _Vector[position];
 
