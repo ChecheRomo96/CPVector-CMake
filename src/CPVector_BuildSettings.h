@@ -22,7 +22,7 @@
  
         #if defined(__avr__)
             #include <cstdlib>
-            #define CPVECTOR_USING_C
+            #define CPVECTOR_USING_C_ALLOCATION
             
             #ifndef PROGMEM_MACRO
                 #include <avr/pgmspace.h>
@@ -39,14 +39,14 @@
  
         #if defined(ESP32)
 
-            #if !defined(CPVECTOR_USING_STD) && !defined(CPVECTOR_USING_C) && !defined(CPVECTOR_USING_CPP)
+            #if !defined(CPVECTOR_USING_STD_ALLOCATION) && !defined(CPVECTOR_USING_C_ALLOCATION) && !defined(CPVECTOR_USING_CPP_ALLOCATION)
 
                 #define CPVECTOR_USING_STD
             #endif
 
             #if defined(CPVECTOR_USING_STD)
                 #include <vector>
-            #elif defined(CPVECTOR_USING_C)
+            #elif defined(CPVECTOR_USING_C_ALLOCATION)
                 #include <cstdlib>
             #endif
 
@@ -60,7 +60,7 @@
             //#define CPVECTOR_VERSION "0.0.1"
             #include <cstdlib>
 
-            #define CPVECTOR_USING_C
+            #define CPVECTOR_USING_C_ALLOCATION
         #endif
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,7 +68,7 @@
     
         #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__APPLE__) || defined(linux)
             
-            #if !defined(CPVECTOR_USING_STD)
+            #if !defined(CPVECTOR_USING_STD_ALLOCATION)
                 #include <vector>
                 #define CPVECTOR_USING_STD
             #endif
