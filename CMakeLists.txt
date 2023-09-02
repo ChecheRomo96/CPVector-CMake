@@ -56,6 +56,8 @@
 	if( ${CPVECTOR_TESTING} )
 		message("Building ${CMAKE_PROJECT_NAME} Tests...")
 
+		cmake_policy(SET CMP0135 NEW)
+
 		include(FetchContent)
 
 		FetchContent_Declare(
