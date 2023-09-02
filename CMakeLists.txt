@@ -30,6 +30,10 @@
 ######################################################################################################
 # Compile Configuration
 
+	set(CPVECTOR_USE_STD_VECTOR_ALLOCATION FALSE CACHE BOOL "CPVector::vector using std::vector")
+	set(CPVECTOR_USE_C_ALLOCATION FALSE CACHE BOOL "CPVector::vector using C allocators (malloc, calloc, free) ")
+	set(CPVECTOR_USE_CPP_ALLOCATION FALSE CACHE BOOL "CPVector::vector using C++ allocators (new, new[], delete, delete[]).")
+
 	set(CPVECTOR_BUILD_EXAMPLES FALSE CACHE BOOL "Build CPVector Examples")
 	set(CPVECTOR_TESTING FALSE CACHE BOOL "CPVector Testing Enabled")	
 	set(CPVECTOR_COMPILE_SORTING FALSE CACHE BOOL "Compile CPVector::Sorting")
