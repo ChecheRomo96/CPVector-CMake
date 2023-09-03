@@ -7,7 +7,7 @@
 
 	TEST(DynamicAllocationTesting, VectorPointerToObject) {
 
-        #if defined(CPVECTOR_USING_STD)
+        #if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION) || defined(CPVECTOR_USING_CPP_ALLOCATION)
 			CPVector::vector<uint8_t>* myVectorptr = nullptr;
 
 			EXPECT_EQ((void*)myVectorptr,nullptr);
@@ -19,15 +19,29 @@
 			EXPECT_EQ(myVectorptr->size(),12);
 
 			delete(myVectorptr);
+		#elif (CPVECTOR_USING_C_ALLOCATION)
+
+			CPVector::vector<uint8_t>* myVectorptr = NULL;
+
+			EXPECT_EQ((void*)myVectorptr,NULL);
+			
+			myVectorptr = (CPVector::vector<uint8_t>*)malloc(sizeof(CPVector::vector<uint8_t>) * 12);
+
+			ASSERT_NE(myVectorptr,NULL);
+
+			EXPECT_EQ(myVectorptr->size(),12);
+
+			delete(myVectorptr);
+
 		#endif
 	}
 //
 //////////////////////////////////////////////////////////////////////////////////
 // dynamicAllocation2
 
-	TEST(DynamicAllocationTesting, VectorPointerToArray) {
+    #if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION) || defined(CPVECTOR_USING_CPP)
+		TEST(DynamicAllocationTesting, VectorPointerToArray) {
 
-        #if defined(CPVECTOR_USING_STD) || defined(CPVECTOR_USING_CPP)
 			CPVector::vector<uint8_t>* myVectorptr = nullptr;
 
 			EXPECT_EQ((void*)myVectorptr,nullptr);
@@ -36,28 +50,24 @@
 
 			ASSERT_NE(myVectorptr,nullptr);
 
-			for(uint8_t i = 0; i < 8; i++)
-			{
+			for(uint8_t i = 0; i < 8; i++){
 				myVectorptr[i] = CPVector::vector<uint8_t>(8);
 				ASSERT_EQ(myVectorptr[i].size(), 8);
 
-			    for(uint8_t j = 0; j < 8; j++) 
-			    {    
+			    for(uint8_t j = 0; j < 8; j++){    
 					myVectorptr[i][j] = (8*i) + j;
 			    }
 			}
 			
-			for(uint8_t i = 0; i < 8; i++)
-			{
-			    for(uint8_t j = 0; j < 8; j++) 
-			    {
+			for(uint8_t i = 0; i < 8; i++){
+			    for(uint8_t j = 0; j < 8; j++){
 			        EXPECT_EQ(myVectorptr[i][j], (8*i) + j);
 			    }
 			}
 
 			delete[] myVectorptr;
-		#endif
-	}
+		}
+	#endif
 //
 //////////////////////////////////////////////////////////////////////////////////
 // dynamicAllocation3

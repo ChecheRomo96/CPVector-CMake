@@ -1,5 +1,5 @@
 add_subdirectory(BasicFunctionality)
 
-if ( ${CPVECTOR_COMPILE_SORTING} )
+if ( ${CPVECTOR_SORTING} )
 	add_subdirectory(Sorting)
 endif()

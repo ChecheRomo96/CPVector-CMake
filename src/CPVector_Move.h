@@ -10,7 +10,7 @@
     namespace CPVector
     {
 
-        #ifndef CPVECTOR_USING_STD_ALLOCATION
+        #ifndef CPVECTOR_USING_STD_VECTOR_ALLOCATION
 
 
         /**
@@ -79,7 +79,7 @@
         typename CPVector::remove_reference<T>::type&& move(T&& t)
         {
 
-            #if defined(CPVECTOR_USING_STD_ALLOCATION) 
+            #if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION) 
               return static_cast<typename std::remove_reference<T>::type&&>(t);
             #else
               return static_cast<typename CPVector::remove_reference<T>::type&&>(t);

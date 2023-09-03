@@ -70,8 +70,7 @@
 		CPVector::vector<uint8_t> myVector = {0, 1, 2};
 		ASSERT_EQ(myVector.size(),3);
 
-		for(uint8_t i = 0; i < myVector.size(); i++)
-		{
+		for(uint8_t i = 0; i < myVector.size(); i++){
 			EXPECT_EQ(myVector[i], i);
 		}
 
@@ -80,8 +79,7 @@
 		EXPECT_EQ(myVector.size(), 0);
 		EXPECT_EQ(myVector.capacity(), 0);
 
-		for (uint8_t i = 0; i < myVec2.size(); i++)
-		{
+		for (uint8_t i = 0; i < myVec2.size(); i++){
 			EXPECT_EQ(myVector[i], i);
 		}
 

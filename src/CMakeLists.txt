@@ -32,22 +32,20 @@
 ######################################################################################################
 # Add Compliler Definitions
 
-	if(${CPVECTOR_COMPILE_SORTING})
+	if(${CPVECTOR_SORTING})
 		target_compile_definitions(CPVector INTERFACE CPVECTOR_SORTING_ENABLED)
 	endif()
 
-	if(${CPVECTOR_USE_STD_VECTOR_ALLOCATION})
-		target_compile_definitions(CPVector INTERFACE CPVECTOR_USING_STD_ALLOCATION)
+	if( ${CPVECTOR_ALLOCATION_METHOD} STREQUAL "std::vector wrapper" )
+		target_compile_definitions(CPVector INTERFACE CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 	endif()
 
-
-	if(${CPVECTOR_USE_CPP_ALLOCATION})
-		target_compile_definitions(CPVector INTERFACE CPVECTOR_USING_CPP_ALLOCATION)
-	endif()
-
-
-	if(${CPVECTOR_USE_C_ALLOCATION})
+	if( ${CPVECTOR_ALLOCATION_METHOD} STREQUAL "CPP allocators (malloc, calloc, free)" )
 		target_compile_definitions(CPVector INTERFACE CPVECTOR_USING_C_ALLOCATION)
+	endif()
+
+	if( ${CPVECTOR_ALLOCATION_METHOD} STREQUAL "C++ allocators (new, new[], delete, delete[])" )
+		target_compile_definitions(CPVector INTERFACE CPVECTOR_USING_CPP_ALLOCATION)
 	endif()
 
 #
