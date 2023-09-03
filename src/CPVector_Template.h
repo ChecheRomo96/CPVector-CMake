@@ -12,7 +12,7 @@
 	namespace CPVector{
 
 
-		#if defined( CPVECTOR_USING_STD_ALLOCATION )
+		#if defined( CPVECTOR_USING_STD_VECTOR_ALLOCATION )
 
 		namespace {
 			const char allocation_error_str[] PROGMEM_MACRO = "Error: Allocation error.";
@@ -71,7 +71,7 @@
 		            unsigned int _Size;
 		            unsigned int _Capacity;
 		            T * _Buffer;
-	            #elif defined(CPVECTOR_USING_STD_ALLOCATION)
+	            #elif defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 	            	std::vector < T > _Vector;
 				#endif
 			//
@@ -98,7 +98,7 @@
 						_Buffer = nullptr;
 						_Size = 0;
 						_Capacity = 0;
-					#elif defined(CPVECTOR_USING_STD_ALLOCATION)
+					#elif defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 						_Vector.resize(0);
 						shrink_to_fit();
 					#endif
@@ -162,7 +162,7 @@
 					vector(vector<T>&& source): vector(){
 						clear();
 
-					#if defined(CPVECTOR_USING_STD_ALLOCATION)
+					#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 						_Vector = std::move(source._Vector); //Moving an object
 					#elif defined(CPVECTOR_USING_CPP_ALLOCATION) | defined(CPVECTOR_USING_C_ALLOCATION)
 						_Buffer = source._Buffer;	// Copying the pointer to the buffer allocated by source
@@ -192,7 +192,7 @@
 				//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				// std::vector Specific Constructors
 
-					#if defined(CPVECTOR_USING_STD_ALLOCATION)
+					#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 						vector(std::initializer_list<T> list): vector(){
 							resize(list.size());
 							std::copy(list.begin(), list.end(), _Vector.begin());
@@ -237,7 +237,7 @@
 							if(this == &source){return *this;}
 							clear();
 
-						#if defined(CPVECTOR_USING_STD_ALLOCATION)
+						#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 							_Vector = std::move(source._Vector); //Moving an object
 						#elif defined(CPVECTOR_USING_CPP_ALLOCATION) | defined(CPVECTOR_USING_C_ALLOCATION)
 							_Buffer = source._Buffer;	// Copying the pointer to the buffer allocated by source
@@ -262,44 +262,27 @@
 				//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				// Subscript Array Operators
 				
-					/**
-					 * @brief Subscript Array operator. This operator is used to reference the element present at position given inside the operator. 
-					 * 
-					 * It is similar to the at() function, the only difference is that the at() function throws an out-of-range exception when the position is not in the bounds of the size of vector, while this operator causes undefined behavior.
-					 * @tparam position Position of the element to be fetched.
-					 */
-					T& operator[](unsigned int position){
-						////////////////////////////////////////////////////////////////////////////////////////////
-						// Cast Operator 
-						////////////////////////////////////////////////////////////////////////////////////////////
-						// Arduino and PSoC
+					//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+					//! @brief Subscript Array operator. This operator is used to reference the element present at position given inside the operator. 
+					//!
+					//! It is similar to the at() function, the only difference is that the at() function throws an out-of-range exception when the position is not in the bounds of the size of vector, while this operator causes undefined behavior.
+					//! @tparam position Position of the element to be fetched.
+					
+						T& operator[](unsigned int position){
 
-							#if defined(CPVECTOR_USING_C_ALLOCATION)
+							#if defined(CPVECTOR_USING_C_ALLOCATION) || defined(CPVECTOR_USING_CPP_ALLOCATION)
 								 return _Buffer[position];
-							#endif
-						//
-						////////////////////////////////////////////////////////////////////////////////////////////
-						//  std::vector
-
-							#if defined(CPVECTOR_USING_STD_ALLOCATION)
-
-
+							#elif defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 								//allocation_max_size_excededif(position >= size()){ throw CPVector::out }
-
 								return _Vector[position];
-
-
 							#endif
-						//
-						////////////////////////////////////////////////////////////////////////////////////////////
-					}
+						}
+					//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+					//! @brief Subscript Array operator. This operator is used to reference the element present at position given inside the operator. 
+					//!
+					//! It is similar to the at() function, the only difference is that the at() function throws an out-of-range exception when the position is not in the bounds of the size of vector, while this operator causes undefined behavior.
+					//! @tparam position Position of the element to be fetched.
 
-					/**
-					 * @brief Subscript Array operator. This operator is used to reference the element present at position given inside the operator. 
-					 * 
-					 * It is similar to the at() function, the only difference is that the at() function throws an out-of-range exception when the position is not in the bounds of the size of vector, while this operator causes undefined behavior.
-					 * @tparam position Position of the element to be fetched.
-					 */
 					const T& operator[](unsigned int x) const{
 						////////////////////////////////////////////////////////////////////////////////////////////
 						// Cast Operator 
@@ -313,7 +296,7 @@
 						////////////////////////////////////////////////////////////////////////////////////////////
 						//  std::vector
 
-							#if defined(CPVECTOR_USING_STD_ALLOCATION)
+							#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 								return _Vector[x];
 							#endif
 						//
@@ -382,7 +365,7 @@
 						////////////////////////////////////////////////////////////////////////////////////////////
 						//  std::vector
 
-							#if defined(CPVECTOR_USING_STD_ALLOCATION)
+							#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 								return (uint32_t)_Vector.capacity();
 							#endif
 						//
@@ -407,7 +390,7 @@
 						////////////////////////////////////////////////////////////////////////////////////////////
 						//  std::vector
 
-							#if defined(CPVECTOR_USING_STD_ALLOCATION)
+							#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 								return (uint32_t)_Vector.size();
 							#endif
 						//
@@ -494,7 +477,7 @@
 
 							_Buffer = ptr;
 						}
-					#elif defined(CPVECTOR_USING_STD_ALLOCATION)
+					#elif defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 
 						try{
 							if (new_cap > std::vector<T>::allocator_type().max_size() ){
@@ -558,7 +541,7 @@
 						////////////////////////////////////////////////////////////////////////////////////////////
 						//  std::vector
 
-							#if defined(CPVECTOR_USING_STD_ALLOCATION)
+							#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 								_Vector.shrink_to_fit();
 							#endif
 						//
@@ -614,7 +597,7 @@
 						////////////////////////////////////////////////////////////////////////////////////////////
 						//  std::vector
 
-							#if defined(CPVECTOR_USING_STD_ALLOCATION)
+							#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 								
 								auto OldSize = _Vector.size();
 
@@ -661,7 +644,7 @@
 						////////////////////////////////////////////////////////////////////////////////////////////
 						//  std::vector
 
-							#if defined(CPVECTOR_USING_STD_ALLOCATION)
+							#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 								if(_Vector.size() != 0)
 								{
 									_Vector.resize(0);
@@ -715,7 +698,7 @@
 					////////////////////////////////////////////////////////////////////////////////////////////
 					// std::vector
 
-						#if defined(CPVECTOR_USING_STD_ALLOCATION)
+						#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 							_Vector.push_back(value);
 						#endif
 					//
@@ -742,7 +725,7 @@
 					////////////////////////////////////////////////////////////////////////////////////////////
 					// std::vector
 
-						#if defined(CPVECTOR_USING_STD_ALLOCATION)
+						#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 							_Vector.push_back(Rvalue);
 						#endif
 					//
@@ -780,7 +763,7 @@
 					//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					// std::vector
 							
-						#if defined(CPVECTOR_USING_STD_ALLOCATION)
+						#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 							_Vector.erase(_Vector.begin() + index);
 						#endif
 					//
@@ -806,7 +789,7 @@
 					//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					// std::vector
 							
-						#if defined(CPVECTOR_USING_STD_ALLOCATION)
+						#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 							_Vector.erase(_Vector.begin());
 						#endif
 					//
@@ -832,7 +815,7 @@
 					//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					// std::vector
 							
-						#if defined(CPVECTOR_USING_STD_ALLOCATION)
+						#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 							_Vector.pop_back();
 						#endif
 					//
@@ -863,7 +846,7 @@
 					//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					// std::vector
 
-						#if defined(CPVECTOR_USING_STD_ALLOCATION)
+						#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 							_Vector.emplace(_Vector.begin()+pos,value);
 						#endif
 					//
@@ -895,7 +878,7 @@
 					//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					// std::vector
 
-						#if defined(CPVECTOR_USING_STD_ALLOCATION)
+						#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 							_Vector.emplace(_Vector.begin()+pos,value);
 						#endif
 					//
@@ -943,7 +926,7 @@
 					////////////////////////////////////////////////////////////////////////////////////////////
 					// std::vector
 
-						#if defined(CPVECTOR_USING_STD_ALLOCATION)
+						#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 							_Vector.erase(_Vector.begin()+index);
 						#endif
 					//
@@ -984,7 +967,7 @@
 					//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					// std::vector
 
-						#if defined(CPVECTOR_USING_STD_ALLOCATION)
+						#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 							_Vector.erase(_Vector.begin()+first, _Vector.begin()+last);
 						#endif
 					//
