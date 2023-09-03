@@ -74,6 +74,17 @@
 		{
 			EXPECT_EQ(myVector[i], i);
 		}
+
+		auto myVec2 = CPVector::move(myVector);
+
+		EXPECT_EQ(myVector.size(), 0);
+		EXPECT_EQ(myVector.capacity(), 0);
+
+		for (uint8_t i = 0; i < myVec2.size(); i++)
+		{
+			EXPECT_EQ(myVector[i], i);
+		}
+
 	}
 //
 //////////////////////////////////////////////////////////////////////////////////
