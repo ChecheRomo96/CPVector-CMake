@@ -30,18 +30,16 @@
 ######################################################################################################
 # Compile Configuration
 	
-	set(STRINGS CACHE STRING "std::vector" "std::vector" "std::vector" )
 	set(CPVECTOR_ALLOCATION_METHOD "dummy" CACHE STRING "CPVector allocation method")
+	set_property(CACHE BaseName PROPERTY STRINGS  "std::vector wrapper" "CPP allocators (malloc, calloc, free)" "CPVector::vector using C++ allocators (new, new[], delete, delete[])")
 
-	set(CPVECTOR_USE_STD_VECTOR_ALLOCATION FALSE CACHE BOOL "CPVector::vector using std::vector")
-	set(CPVECTOR_USE_C_ALLOCATION FALSE CACHE BOOL "CPVector::vector using C allocators (malloc, calloc, free) ")
-	set(CPVECTOR_USE_CPP_ALLOCATION FALSE CACHE BOOL "CPVector::vector using C++ allocators (new, new[], delete, delete[]).")
+	#set(CPVECTOR_USE_STD_VECTOR_ALLOCATION FALSE CACHE BOOL "CPVector::vector using std::vector")
+	#set(CPVECTOR_USE_C_ALLOCATION FALSE CACHE BOOL "CPVector::vector using C allocators (malloc, calloc, free) ")
+	#set(CPVECTOR_USE_CPP_ALLOCATION FALSE CACHE BOOL "CPVector::vector using C++ allocators (new, new[], delete, delete[]).")
 
 	set(CPVECTOR_USE_EXCEPTIONS FALSE CACHE BOOL "Exception functionality toggle, TRUE = Enabled.S")
 
 	set(CPVECTOR_SORTING FALSE CACHE BOOL "Compile CPVector::Sorting")
-
-
 
 	set(CPVECTOR_EXAMPLES FALSE CACHE BOOL "Build Examples")
 	set(CPVECTOR_TESTING FALSE CACHE BOOL "Testing Enabled")	
