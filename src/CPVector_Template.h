@@ -284,7 +284,7 @@
 							#if defined(CPVECTOR_USING_STD_ALLOCATION)
 
 
-								if(position >= size()){ throw CPVector::out }
+								//if(position >= size()){ throw CPVector::out }
 
 								return _Vector[position];
 
@@ -498,13 +498,13 @@
 
 						try{
 							if (new_cap > std::vector<T>::allocator_type().max_size() ){
-								throw CPVector::allocation_size_error();
+								throw CPVector::allocation_max_size_exceded();
 							}
 							else{
 								_Vector.reserve(new_cap);
 							}
 						}
-						catch(const CPVector::allocation_size_error& ex){
+						catch(const CPVector::allocation_max_size_exceded& ex){
 						    throw ex;
 						}
 						catch(const std::logic_error& ex){

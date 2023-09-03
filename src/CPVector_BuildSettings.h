@@ -69,9 +69,11 @@
         #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__APPLE__) || defined(linux)
             
             #if !defined(CPVECTOR_USING_STD_ALLOCATION)
-                #include <vector>
-                #define CPVECTOR_USING_STD
+                #define CPVECTOR_USING_STD_ALLOCATION
             #endif
+            
+
+            #include <vector>
         #endif
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
