@@ -238,7 +238,7 @@
 							clear();
 
 						#if defined(CPVECTOR_USING_STD_ALLOCATION)
-							_Vector = std::move(source.stdVec()); //Moving an object
+							_Vector = std::move(source._Vector); //Moving an object
 						#elif defined(CPVECTOR_USING_CPP_ALLOCATION) | defined(CPVECTOR_USING_C_ALLOCATION)
 							_Buffer = source._Buffer;	// Copying the pointer to the buffer allocated by source
 							_Size = source._Size;
