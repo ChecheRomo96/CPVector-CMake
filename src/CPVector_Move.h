@@ -76,13 +76,13 @@
          * @return The object to be moved casted to an RValue 
          */
         template <typename T>
-        typename CPVector::Move<T>::type&& move(T&& t)
+        typename CPVector::remove_reference<T>::type&& move(T&& t)
         {
 
             #if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION) 
-              return static_cast<typename std::Move<T>::type&&>(t);
+              return static_cast<typename std::remove_reference<T>::type&&>(t);
             #else
-              return static_cast<typename CPVector::Move<T>::type&&>(t);
+            return static_cast<typename CPVector::remove_reference<T>::type&&>(t);
             #endif
         }
 
