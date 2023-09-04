@@ -1,2 +1,0 @@
-add_executable( CPVector_3_MemoryLeakCheck main.cpp)
-target_link_libraries( CPVector_3_MemoryLeakCheck PUBLIC CPVector)
