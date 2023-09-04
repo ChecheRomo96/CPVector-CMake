@@ -1,0 +1,50 @@
+name: Ctest Windows
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  build_and_test_Desktop:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os: [windows-latest]
+        build_type: [Release]
+        cpp_compiler: [g++, cl, clang++]
+        allocation_method: [std::vector, CPP, C]
+          
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      run: |
+        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+        
+    - name: Initialize and Update Submodules
+      run: |
+        git submodule init |
+        git submodule update
+          
+    - name: Configure CMake
+      run: >
+        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -S ${{ github.workspace }}
+        -DCPVECTOR_ALLOCATION_METHOD=${{ matrix.allocation_method }}
+        -DCPVECTOR_SORTING=TRUE
+        -DCPVECTOR_USE_EXCEPTIONS=TRUE
+        -DCPVECTOR_EXAMPLES=TRUE
+        -DCPVECTOR_TESTING=TRUE
+    - name: Build
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+
+    - name: Test
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}
+      run: ctest --build-config ${{ matrix.build_type }} --rerun-failed --output-on-failure
