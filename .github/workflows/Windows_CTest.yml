@@ -15,7 +15,7 @@ jobs:
         os: [windows-latest]
         build_type: [Release]
         cpp_compiler: [g++, cl, clang++]
-        allocation_method: [std::vector, CPP, C]
+        allocation_method: ["std::vector", "CPP", "C"]
           
     steps:
     - uses: actions/checkout@v3
