@@ -18,7 +18,7 @@
 ######################################################################################################
 # Add Subdirectories
 
-	if( ${CPVECTOR_COMPILE_SORTING} )
+	if( ${CPVECTOR_SORTING} )
 		message("Building CPVector::Sorting...")
 		add_subdirectory(Sorting)
 	endif()
@@ -36,16 +36,19 @@
 		target_compile_definitions(CPVector INTERFACE CPVECTOR_SORTING_ENABLED)
 	endif()
 
-	if( ${CPVECTOR_ALLOCATION_METHOD} STREQUAL "std::vector wrapper" )
+	if( ${CPVECTOR_ALLOCATION_METHOD} STREQUAL "std::vector" )
+		message("Using std::vector for allocation")
 		target_compile_definitions(CPVector INTERFACE CPVECTOR_USING_STD_VECTOR_ALLOCATION)
+	else()
+		message(":(")
 	endif()
 
-	if( ${CPVECTOR_ALLOCATION_METHOD} STREQUAL "CPP allocators (malloc, calloc, free)" )
-		target_compile_definitions(CPVector INTERFACE CPVECTOR_USING_C_ALLOCATION)
-	endif()
-
-	if( ${CPVECTOR_ALLOCATION_METHOD} STREQUAL "C++ allocators (new, new[], delete, delete[])" )
+	if( ${CPVECTOR_ALLOCATION_METHOD} STREQUAL "CPP" )
 		target_compile_definitions(CPVector INTERFACE CPVECTOR_USING_CPP_ALLOCATION)
+	endif()
+
+	if( ${CPVECTOR_ALLOCATION_METHOD} STREQUAL "C" )
+		target_compile_definitions(CPVector INTERFACE CPVECTOR_USING_C_ALLOCATION)
 	endif()
 
 #
