@@ -31,7 +31,7 @@
 # Compile Configuration
 	
 	set(CPVECTOR_ALLOCATION_METHOD "dummy" CACHE STRING "CPVector allocation method")
-	set_property(CACHE CPVECTOR_ALLOCATION_METHOD PROPERTY STRINGS  "std::vector wrapper" "CPP allocators (malloc, calloc, free)" "C++ allocators (new, new[], delete, delete[])")
+	set_property(CACHE CPVECTOR_ALLOCATION_METHOD PROPERTY STRINGS  "std::vector" "CPP" "C")
 
 	#set(CPVECTOR_USE_STD_VECTOR_ALLOCATION FALSE CACHE BOOL "CPVector::vector using std::vector")
 	#set(CPVECTOR_USE_C_ALLOCATION FALSE CACHE BOOL "CPVector::vector using C allocators (malloc, calloc, free) ")
