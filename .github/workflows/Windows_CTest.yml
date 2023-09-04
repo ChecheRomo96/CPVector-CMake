@@ -1,4 +1,4 @@
-name: Ctest Windows
+name: CtestWindows
 
 on:
   workflow_dispatch:
