@@ -1,0 +1,79 @@
+name: CMake on multiple platforms
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  build_and_test_Desktop:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        build_type: [Release]
+        cpp_compiler: [g++, cl, clang++]
+        include:
+          - os: ubuntu-latest
+            cpp_compiler: g++
+            build_type: Release
+          - os: ubuntu-latest
+            cpp_compiler: clang++
+            build_type: Release
+          - os: windows-latest
+            cpp_compiler: cl
+            build_type: Release
+          - os: macos-latest
+            cpp_compiler: g++
+            build_type: Release
+          - os: macos-latest
+            cpp_compiler: clang++
+            build_type: Release
+        exclude:
+          - os: ubuntu-latest
+            cpp_compiler: clang++
+            build_type: Release
+          - os: ubuntu-latest
+            cpp_compiler: cl
+            build_type: Release
+          - os: macos-latest
+            cpp_compiler: cl
+            build_type: Release
+          - os: windows-latest
+            cpp_compiler: clang++
+            build_type: Release
+          - os: windows-latest
+            cpp_compiler: g++
+            build_type: Release
+          
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      run: |
+        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+        
+    - name: Initialize and Update Submodules
+      run: |
+        git submodule init
+        git submodule update
+          
+    - name: Configure CMake
+      run: >
+        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -S ${{ github.workspace }}
+        -DCPVECTOR_ENABLE_TESTING=TRUE
+        -DCPVECTOR_COMPILE_SORTING=TRUE
+    - name: Build
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+
+    - name: Test
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}
+      run: ctest --build-config ${{ matrix.build_type }} --rerun-failed --output-on-failure
