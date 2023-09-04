@@ -494,11 +494,11 @@
 						    //handle logic_error
 						    throw ex;
 						}
-						catch(const std::exception& ex){
-						    //catches all exceptions derived from base exception.. might seem redundant
-						}
 						catch(const std::bad_alloc& ex){
 						    //handle bad_alloc
+						}
+						catch(const std::exception& ex){
+						    //catches all exceptions derived from base exception.. might seem redundant
 						}
 						catch(...){
 						    //handle all exceptions.. doesn't buy you much over here
