@@ -351,6 +351,7 @@
 						if(new_cap == 0){ clear(); return;}
 
 						if(_Buffer == NULL){
+
 							_Buffer = (T*)malloc(new_cap * sizeof(T));
 
 							if(_Buffer == NULL){
@@ -469,31 +470,78 @@
 				//! The request is non-binding, and the container implementation is free to optimize otherwise and leave the vector with a capacity greater than its size.\n
 				//! This may cause a reallocation, but has no effect on the vector size and cannot alter its elements.                     
 				 
-					void shrink_to_fit()
-					{
-							#if defined(CPVECTOR_USING_C_ALLOCATION)
-								if(_Capacity > _Size)
+					void shrink_to_fit(){
+					#if defined(CPVECTOR_USING_C_ALLOCATION)
+						if(_Capacity > _Size)
+						{
+							T* ptr = NULL;
+							
+							if((ptr = (T*)malloc(_Size * sizeof(T)) ) != NULL)
+							{
+
+								for(uint32_t i = 0; i < _Size; i++)
 								{
-									T* ptr = NULL;
-									
-									if((ptr = (T*)malloc(_Size * sizeof(T)) ) != NULL)
-									{
-
-										for(uint32_t i = 0; i < _Size; i++)
-										{
-											ptr[i] = _Buffer[i];
-										}
-
-										free(_Buffer );
-										_Buffer = ptr;
-										_Capacity = _Size;
-									}
+									ptr[i] = _Buffer[i];
 								}
-							#elif defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
-								_Vector.shrink_to_fit();
+
+								free(_Buffer );
+								_Buffer = ptr;
+								_Capacity = _Size;
+							}
+							else
+							{
+							#ifdef CPVECTOR_EXCEPTIONS_ENABLED
+								throw CPVector::bad_alloc("Could not allocate new buffer");
 							#endif
-						//
-						////////////////////////////////////////////////////////////////////////////////////////////
+							}
+						}
+					#elif defined(CPVECTOR_USING_CPP_ALLOCATION)
+						if(_Capacity > _Size)
+						{
+							T* ptr = nullptr;
+
+						#ifdef CPVECTOR_EXCEPTIONS_ENABLED
+							try{
+						#endif
+								ptr = new T[_Size];
+
+						#ifdef CPVECTOR_EXCEPTIONS_ENABLED
+							}
+							catch(const std::bad_alloc& ex){
+								throw CPVector::bad_alloc();
+							}
+							catch(...){
+						    	throw;
+						    }
+						#endif
+
+							for(unsigned int i = 0; i < _Size; i++){
+								ptr[i] = _Buffer[i];
+							}
+
+							delete[] _Buffer;
+
+							_Buffer = ptr;
+							_Capacity = _Size;
+						}
+					#elif defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
+
+						#ifdef CPVECTOR_EXCEPTIONS_ENABLED
+							try{
+						#endif
+
+								_Vector.shrink_to_fit();
+
+						#ifdef CPVECTOR_EXCEPTIONS_ENABLED
+							}
+							catch(const std::bad_alloc& ex){
+								throw CPVector::bad_alloc();
+							}
+							catch(...){
+						    	throw;
+						    }
+						#endif				
+					#endif
 					}
 				//
 				//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -509,7 +557,7 @@
 
 						if(size() == new_size){return 1;}
 						
-					#if defined(CPVECTOR_USING_C_ALLOCATION)
+					#if defined(CPVECTOR_USING_C_ALLOCATION) | defined(CPVECTOR_USING_CPP_ALLOCATION)
 						
 						if(new_size == 0){ clear(); return 1;}
 
@@ -523,17 +571,11 @@
 
 						#ifdef CPVECTOR_EXCEPTIONS_ENABLED
 							}
-							catch(const std::bad_alloc& ex){
-								//throw CPVector::bad_alloc("Could not allocate new buffer");
-							}
-							catch(const std::logic_error& ex){
-						    	//throw CPVector::logic_error("");
-							}
-							catch(const std::exception& ex){
-						    	//throw CPVector::exception("");
+							catch(const CPVector::bad_alloc& ex){
+								throw;
 							}
 							catch(...){
-						    	//throw;
+						    	throw;
 							}
 						#endif
 
@@ -559,21 +601,34 @@
 						
 						return 1;
 					#elif defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
+							
+							auto OldSize = _Vector.size();
+
+						#ifdef CPVECTOR_EXCEPTIONS_ENABLED
+							try{ 
+						#endif
+								_Vector.resize(new_size, value);
 						
-						auto OldSize = _Vector.size();
+						#ifdef CPVECTOR_EXCEPTIONS_ENABLED
+							}
+							catch(const std::bad_alloc& ex){
+								throw CPVector::bad_alloc();
+							}
+							catch(const std::length_error& ex){
+						    	throw CPVector::length_error("Attempted to exceed implementation defined length limits");
+							}
+							catch(const std::logic_error& ex){
+						    	throw CPVector::logic_error("Faulty logic detected");
+							}
+							catch(const std::exception& ex){
+						    	throw CPVector::exception();
+							}
+							catch(...){
+						    	throw;
+							}
+						#endif
 
-						_Vector.resize(new_size, value);
-
-						if(OldSize > new_size)
-						{
-							_Vector.shrink_to_fit();
-						}
-
-						if(_Vector.size() == new_size){return 1;}
-						else{return 0;}
-
-						return ((_Vector.size() == new_size) ? true : false );
-
+							return ((_Vector.size() == new_size) ? true : false );
 					#endif
 					}
 				//
@@ -582,37 +637,33 @@
 				//!
 				//! if ( capacity > 0 ) A reallocation is guaranteed to happen, and the vector capacity is guaranteed to change due to calling this function.
 				 
-					void clear()
-					{
-						////////////////////////////////////////////////////////////////////////////////////////////
-						// Arduino and PSoC
+					void clear(){
+					#if defined(CPVECTOR_USING_C_ALLOCATION)
+						for(uint8_t i = 0; i < _Size; i++){
+							_Buffer[i].~T();
+						}
 
-							#if defined(CPVECTOR_USING_C_ALLOCATION)
+						free(_Buffer);
+						_Buffer = NULL;
+						_Size = 0;
+						_Capacity = 0;
+					#elif defined(CPVECTOR_USING_CPP_ALLOCATION)
+						for(uint8_t i = 0; i < _Size; i++){
+							_Buffer[i].~T();
+						}
 
-								for(uint8_t i = 0; i < _Size; i++)
-								{
-									_Buffer[i].~T();
-								}
-
-								free(_Buffer);
-								_Buffer = NULL;
-								_Size = 0;
-								_Capacity = 0;
-							#endif
-						//
-						////////////////////////////////////////////////////////////////////////////////////////////
-						//  std::vector
-
-							#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
-								if(_Vector.size() != 0)
-								{
-									_Vector.resize(0);
-								}
-								
-								_Vector.shrink_to_fit();
-							#endif
-						//
-						////////////////////////////////////////////////////////////////////////////////////////////
+						delete[] _Buffer;
+						_Buffer = nullptr;
+						_Size = 0;
+						_Capacity = 0;
+					#elif defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
+						if(_Vector.size() != 0)
+						{
+							_Vector.resize(0);
+						}
+						
+						_Vector.shrink_to_fit();
+					#endif
 					} 
 				//
 				//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -650,6 +701,7 @@
 					void push_back(const T& value){
 					#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 						_Vector.push_back(value);
+
 					#elif defined(CPVECTOR_USING_C_ALLOCATION)
 						resize(size() + 1);
 						_Buffer[size() - 1] = value;
@@ -716,6 +768,12 @@
 				//! @return Returns the poped value
 
 					void pop_first(){
+					#ifdef CPVECTOR_EXCEPTIONS_ENABLED
+						if(size() == 0){
+							throw CPVector::index_out_of_range("Index requested on subscript array does not exists");
+						}
+					#endif
+
 					#if defined(CPVECTOR_USING_C_ALLOCATION)
 						pop(0);
 					#elif defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
@@ -731,6 +789,12 @@
 				//! @return Returns the poped value
 				
 					void pop_back(){
+					#ifdef CPVECTOR_EXCEPTIONS_ENABLED
+						if(size() == 0){
+							throw CPVector::index_out_of_range("Index requested on subscript array does not exists");
+						}
+					#endif
+
 					#if defined(CPVECTOR_USING_C_ALLOCATION)
 						pop(size()-1);
 					#elif defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
@@ -747,15 +811,16 @@
 
 					void emplace(const T& value, unsigned int pos){
 					#if defined(CPVECTOR_USING_C_ALLOCATION)
+
 						resize(_Size+1);
+						
+
 						for(unsigned int i = _Size-1 ; i > pos ; i--)
 						{
 							(*this)[i] = CPVector::move( (*this)[i-1] );
 						}
 						(*this)[pos] = value;
-					#endif
-
-					#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
+					#elif defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 						_Vector.emplace(_Vector.begin()+pos,value);
 					#endif
 					}
