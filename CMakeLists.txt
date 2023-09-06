@@ -37,7 +37,7 @@
 	#set(CPVECTOR_USE_C_ALLOCATION FALSE CACHE BOOL "CPVector::vector using C allocators (malloc, calloc, free) ")
 	#set(CPVECTOR_USE_CPP_ALLOCATION FALSE CACHE BOOL "CPVector::vector using C++ allocators (new, new[], delete, delete[]).")
 
-	set(CPVECTOR_USE_EXCEPTIONS FALSE CACHE BOOL "Exception functionality toggle, TRUE = Enabled.S")
+	set(CPVECTOR_EXCEPTIONS FALSE CACHE BOOL "Exception functionality toggle, TRUE = Enabled.")
 
 	set(CPVECTOR_SORTING FALSE CACHE BOOL "Compile CPVector::Sorting")
 
