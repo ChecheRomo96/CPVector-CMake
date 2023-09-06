@@ -14,6 +14,11 @@
 	list( APPEND HEADERS_LIST "${CMAKE_CURRENT_LIST_DIR}/CPVector.h")
 	list( APPEND HEADERS_LIST "${CMAKE_CURRENT_LIST_DIR}/CPVector_BuildSettings.h")
 	list( APPEND HEADERS_LIST "${CMAKE_CURRENT_LIST_DIR}/CPVector_Template.h")
+	list( APPEND HEADERS_LIST "${CMAKE_CURRENT_LIST_DIR}/CPVector_Move.h")
+
+	if( ${CPVECTOR_EXCEPTIONS} )
+		list( APPEND HEADERS_LIST "${CMAKE_CURRENT_LIST_DIR}/CPVector_Exceptions.h")
+	endif()
 #
 ######################################################################################################
 # Add Subdirectories
@@ -33,23 +38,28 @@
 # Add Compliler Definitions
 
 	if(${CPVECTOR_SORTING})
+		message("CPVector::Sorting Enabled")
 		target_compile_definitions(CPVector INTERFACE CPVECTOR_SORTING_ENABLED)
+	endif()
+
+	if( ${CPVECTOR_EXCEPTIONS} )
+		message("CPVector exceptions enabled")
+		target_compile_definitions(CPVector INTERFACE CPVECTOR_EXCEPTIONS_ENABLED)
 	endif()
 
 	if( ${CPVECTOR_ALLOCATION_METHOD} STREQUAL "std::vector" )
 		message("Using std::vector for allocation")
 		target_compile_definitions(CPVector INTERFACE CPVECTOR_USING_STD_VECTOR_ALLOCATION)
-	else()
-		message(":(")
-	endif()
-
-	if( ${CPVECTOR_ALLOCATION_METHOD} STREQUAL "CPP" )
+	elseif( ${CPVECTOR_ALLOCATION_METHOD} STREQUAL "CPP" )
+		message("Using C++ allocators (new, new[], delete, delete[]")
 		target_compile_definitions(CPVector INTERFACE CPVECTOR_USING_CPP_ALLOCATION)
-	endif()
-
-	if( ${CPVECTOR_ALLOCATION_METHOD} STREQUAL "C" )
+	elseif( ${CPVECTOR_ALLOCATION_METHOD} STREQUAL "C" )
+		message("Using C allocators (malloc, calloc, free)")
 		target_compile_definitions(CPVector INTERFACE CPVECTOR_USING_C_ALLOCATION)
 	endif()
+	
+
+
 
 #
 ######################################################################################################
