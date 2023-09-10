@@ -47,7 +47,9 @@
 		target_compile_definitions(CPVector INTERFACE CPVECTOR_EXCEPTIONS_ENABLED)
 	endif()
 
-	if( ${CPVECTOR_ALLOCATION_METHOD} STREQUAL "std::vector" )
+	if( ${CPVECTOR_ALLOCATION_METHOD} STREQUAL "dummy" )
+		message("No allocation method selected")
+	elseif( ${CPVECTOR_ALLOCATION_METHOD} STREQUAL "std::vector" )
 		message("Using std::vector for allocation")
 		target_compile_definitions(CPVector INTERFACE CPVECTOR_USING_STD_VECTOR_ALLOCATION)
 	elseif( ${CPVECTOR_ALLOCATION_METHOD} STREQUAL "CPP" )

@@ -2,11 +2,12 @@
 #include <CPVector.h>
 
 #if defined(CPVECTOR_SORTING_ENABLED)
-	CPVector::Sorting::Result Sorting_EvenFirst(const uint8_t& Element, const uint8_t& Pivot)
-	{
-	  if( (Element%2) == (Pivot%2) ){return CPVector::Sorting::Equal;}
-	  else if((Element%2) == 0){return CPVector::Sorting::Swap;}
-	  return CPVector::Sorting::Ignore;
+	namespace {
+		CPVector::Sorting::Result Sorting_EvenFirst(const uint8_t& Element, const uint8_t& Pivot){
+		  if( (Element%2) == (Pivot%2) ){return CPVector::Sorting::Equal;}
+		  else if((Element%2) == 0){return CPVector::Sorting::Swap;}
+		  return CPVector::Sorting::Ignore;
+		}
 	}
 #endif
 

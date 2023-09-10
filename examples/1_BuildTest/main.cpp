@@ -9,22 +9,17 @@ int main()
     	std::cout<<"CPVector::Sorting Enabled."<<std::endl;
     #endif
 
+    #if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
+        std::cout<<"CPVector::vector will act as a std::vector wrapper."<<std::endl;
+    #endif
 
+    #if defined(CPVECTOR_USING_CPP_ALLOCATION)
+        std::cout<<"CPVector::vector will handle allocations with C++ allocators new, new[], delete, and delte[]."<<std::endl;
+    #endif
 
-        CPVector::vector<CPVector::vector<uint8_t>> myVector(10, CPVector::vector<uint8_t>(2) );
-
-        auto myVector2 = CPVector::move(myVector);
-
-
-        myVector.push_back(CPVector::move(CPVector::vector<uint8_t>(1)));
-        myVector.emplace(CPVector::move(CPVector::vector<uint8_t>(5)), 0);
-
-
-        std::cout << myVector.size() << ", " << myVector2.size() << std::endl;
-        std::cout << myVector.capacity() << ", " << myVector2.capacity() << std::endl;
-
-        std::cout << (unsigned int)myVector[0].size() << std::endl;
-        std::cout << (unsigned int)myVector[1].size() << std::endl;
+    #if defined(CPVECTOR_USING_C_ALLOCATION)
+        std::cout<<"CPVector::vector will handle allocations with C allocators malloc, calloc, realloc, free."<<std::endl;
+    #endif
 
     return 0;
 }

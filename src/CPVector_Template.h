@@ -16,8 +16,9 @@
 	namespace CPVector{
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//! @brief Cross Platform Vector class. CPVector::Vector<T> is a sequence container that encapsulates dynamic size arrays.
-	//! 
+	//! @brief Cross Platform Vector class
+	//!
+	//! CPVector::Vector<T> is a sequence container that encapsulates dynamic size arrays.\n
 	//! The elements are stored contiguously, which means that elements can be accessed not only through iterators, but also using offsets to regular pointers to elements. This means that a pointer to an element of a vector may be passed to any function that expects a pointer to an element of an array.\n\n
 	//! The storage of the vector is handled automatically, being expanded as needed. Vectors usually occupy more space than static arrays, because more memory is allocated to handle future growth. This way a vector does not need to reallocate each time an element is inserted, but only when the additional memory is exhausted. The total amount of allocated memory can be queried using capacity() function. Extra memory can be returned to the system via a call to shrink_to_fit()[1].\n\n
 	//! Reallocations are usually costly operations in terms of performance. The reserve() function can be used to eliminate reallocations if the number of elements is known beforehand.
@@ -159,6 +160,12 @@
 				// std::vector Specific Constructors
 
 					#if defined(CPVECTOR_USING_STD_VECTOR_ALLOCATION)
+					//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+					//! @brief std::initializer list constructor (only available if CPVECTOR_USING_STD_VECTOR_ALLOCATION is enabled). 
+					//!
+					//! Constructs the container with an initializer list
+					//! @tparam list std::initializer list with matching template argument
+					//
 						vector(std::initializer_list<T> list): vector(){
 							resize(list.size());
 							std::copy(list.begin(), list.end(), _Vector.begin());
@@ -237,7 +244,7 @@
 						T& operator[](unsigned int position) {
 						#ifdef CPVECTOR_EXCEPTIONS_ENABLED
 							if(position >= size()){
-								throw CPVector::index_out_of_range("Index requested on subscript array does not exists");
+								throw CPVector::out_of_range("Index requested on subscript array does not exists");
 							}
 						#endif
 
@@ -257,7 +264,7 @@
 						const T& operator[](unsigned int position) const {
 						#ifdef CPVECTOR_EXCEPTIONS_ENABLED
 							if(position >= size()){
-								throw CPVector::index_out_of_range("Index requested on subscript array does not exists");
+								throw CPVector::out_of_range("Index requested on subscript array does not exists");
 							}
 						#endif
 
@@ -734,7 +741,7 @@
 
 					#ifdef CPVECTOR_EXCEPTIONS_ENABLED
 						if(index >= size()){
-							throw CPVector::index_out_of_range("Index requested on subscript array does not exists");
+							throw CPVector::out_of_range("Index requested on subscript array does not exists");
 						}
 					#endif
 
@@ -750,8 +757,8 @@
 
 					#ifdef CPVECTOR_EXCEPTIONS_ENABLED
 						}
-						catch(){
-
+						catch(...){
+							throw;
 						}
 					#endif
 
@@ -770,7 +777,7 @@
 					void pop_first(){
 					#ifdef CPVECTOR_EXCEPTIONS_ENABLED
 						if(size() == 0){
-							throw CPVector::index_out_of_range("Index requested on subscript array does not exists");
+							throw CPVector::out_of_range("Index requested on subscript array does not exists");
 						}
 					#endif
 
@@ -791,7 +798,7 @@
 					void pop_back(){
 					#ifdef CPVECTOR_EXCEPTIONS_ENABLED
 						if(size() == 0){
-							throw CPVector::index_out_of_range("Index requested on subscript array does not exists");
+							throw CPVector::out_of_range("Index requested on subscript array does not exists");
 						}
 					#endif
 

@@ -15,102 +15,47 @@
 		////////////////////////////////////////////////////////////////////////
 		// SortingArray Class
 
+			/**
+			 * @brief      Dynamic array of CPVector::Sorting::Callback, used to sort CPVector::vector with multiple condiditions.
+			 * 
+			 * Relevance in the sorting process is defined by the index of each compare function. First has the most priority.\n
+			 * In order to append new callbacks use push_back(), or emplace(), to remove an element use erase(). 
+			 * @tparam     T	Class to be used as parameters for the Callbacks.
+			 */
 			template <class T>
-	        class SortingArray
-	        {
-	            ////////////////////////////////////////////////////////////////
-	            // Compare Function Vector
+	        class SortingArray : public CPVector::vector<Callback<T>>{
 
-	            	CPVector::vector<Result(*)(const T& a, const T& b)> buffer;
-	            //
-	            ////////////////////////////////////////////////////////////////
+	        private:
+	        	using CPVector::vector<Callback<T>>::sortAscending;
+	        	using CPVector::vector<Callback<T>>::sortDescending;
+	        	using CPVector::vector<Callback<T>>::sort;
 
-	            public:
+            public:
 
-	        	////////////////////////////////////////////////////////////////
-	        	// Constructor and Destructor
+                SortingArray(){
 
-	                SortingArray()
-	                {
+                }
+            
+                ~SortingArray(){
 
-	                }
-	            
-	                ~SortingArray()
-	                {
+                }
 
-	                }
-	        	//
-	        	////////////////////////////////////////////////////////////////
-	        	// API
-
-                    void copy(const Sorting::Callback<T>* Callbacks, unsigned int len, bool Resize = 0)
-	                {
-	                	buffer.copy(Callbacks,len,Resize);
-	                }
-
-                    void copy(const CPVector::vector<Sorting::Callback<T>>& vector, unsigned int len, bool Resize = 0)
-	                {
-	                	auto min = (vector.size()<len)?vector.size():len;
-	                	buffer.copy(vector[0],min,Resize);
-	                }
-
-	                void push_back(Result(*Fn)(const T& a, const T& b))
-	                {
-	                    if(Fn != NULL)
-	                    {
-	                        buffer.push_back(Fn);
-	                    }
-	                }
-
-	                void swap(unsigned int a, unsigned int b)
-	                {
-	                	buffer.swap(a,b);
-	                }
-
-	                void emplace(unsigned int a, unsigned int b)
-	                {
-	                	buffer.swap(a,b);
-	                }
-	            
-	                void erase(unsigned int n)
-	                {
-	                    buffer.erase(n);
-	                }
-
-                    void erase(unsigned int first, unsigned int last)
+                Result compare(const T& a, const T& b) const
+                {
+             		if(CPVector::vector<Callback<T>>::size() == 0){return CPVector::Sorting::Equal;}
+                    
+                    uint8_t index = 0;
+                    Result result = CPVector::Sorting::Equal;
+                    
+                    while(result == CPVector::Sorting::Equal)
                     {
-	                    buffer.erase(first, last);
+                        result = (*this)[index](a,b);
+                        index++;
+                        if(index == CPVector::vector<Callback<T>>::size()){return result;}
                     }
-	            
-	                void erase(Sorting::Callback<T> Fn)
-	                {
-	                	for(uint8_t i = 0; i < buffer.size(); i++)
-	                	{
-	                		if(buffer[i] == Fn)
-	                		{
-	                			buffer.erase(i--);
-	                		}
-	                	}
-	                }
 
-	                Result compare(const T& a, const T& b) const
-	                {
-	             		if(buffer.size() == 0){return CPVector::Sorting::Equal;}
-	                    
-	                    uint8_t index = 0;
-	                    Result result = CPVector::Sorting::Equal;
-	                    
-	                    while(result == CPVector::Sorting::Equal)
-	                    {
-	                        result = buffer[index](a,b);
-	                        index++;
-	                        if(index == buffer.size()){return result;}
-	                    }
-
-	                    return result;
-	                }
-	        	//
-	        	////////////////////////////////////////////////////////////////
+                    return result;
+                }
 	        };
 	    //
         ////////////////////////////////////////////////////////////////////////

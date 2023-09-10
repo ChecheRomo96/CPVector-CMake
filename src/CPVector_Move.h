@@ -63,6 +63,12 @@
         class remove_reference<T&&> {typedef T type;};
 
         #else
+        /**
+         * @brief Template alias to remove the reference from a type.
+         *
+         * The `remove_reference` template alias uses the `std::remove_reference` trait to remove the reference from the given type `T`. It provides a non-reference (rvalue) type as the result.
+         * @tparam T The type from which to remove the reference.
+         */
             template<class T>
             using remove_reference = std::remove_reference<T>;
         #endif
